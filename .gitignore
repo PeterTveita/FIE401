@@ -23,3 +23,12 @@ Thumbs.db
 
 # latexmk output directory
 %OUTDIR%/
+
+Build/
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.aux
+*.log
+*.out
+*.toc

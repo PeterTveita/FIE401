@@ -1,0 +1,30 @@
+{
+  "latex-workshop.latex.tools": [
+    {
+      "name": "latexmk_rootpdf_buildaux",
+      "command": "/Library/TeX/texbin/latexmk",
+      "args": [
+        "-pdf",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-synctex=1",
+        "-outdir=.",
+        "-auxdir=Build",
+        "%DOC%"
+      ]
+    }
+  ],
+
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "latexmk (PDF i root, aux i Build)",
+      "tools": ["latexmk_rootpdf_buildaux"]
+    }
+  ],
+
+  "latex-workshop.latex.autoBuild.run": "onFileChange",
+
+  "files.exclude": {
+    "**/*.synctex.gz": true
+  }
+}

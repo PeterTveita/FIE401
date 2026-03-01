@@ -1,3 +1,7 @@
-\section*{Task 1}
+\section*{Cleaning data}
 
-As we can see, there are clear extremalities between the top 1 percentile and maximum value of some variables. For instance, the varaible $deal\_value$ has a top 1 percentile of 12 717 \$, whilst the maximum value is 164 746 \$, 12.6 times the top 1 percentile.
+As we can see, some of the continous variables in the dataset has outliers. These outliers are loacted above the 99\% percentile, and below the 1\% perecntile.
+To mitigate the influence of extreme values in the dataset, all continous variables are therefore winsorized at these perenctiles.
+
+After checking for missing values, inconsitencies between private and public dummy values and negative values, i cant seem to find any mistakes in the data. 
+The data fulfills the set of criterias defined in the assignment.

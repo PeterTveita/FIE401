@@ -2,7 +2,7 @@
   "latex-workshop.latex.tools": [
     {
       "name": "latexmk_rootpdf_buildaux",
-      "command": "/Library/TeX/texbin/latexmk",
+      "command": "latexmk",
       "args": [
         "-pdf",
         "-interaction=nonstopmode",

@@ -33,6 +33,9 @@ isins <- isins[isins$Index %in% c("SMI", "CAC40", "DAX30"), ]
 df <- merge(firm_info, isins[, c("ISIN", "Index")], by = "ISIN")
 df <- merge(df, chf_eur, by = "date", all.x = TRUE)
 
+#Removing duplicates
+df <- df[!duplicated(df[, c("ISIN", "date")]), ]
+
 #Cleaning data
 df <- df[!is.na(df$volume) & df$volume > 0, ] #Remove rows with missing or zero volume
 df$ask[df$prc < 0] <- NA #Remove negative ask prices
@@ -136,36 +139,85 @@ stargazer(models_pre,
 
 #======================================= Part 3 - DiD Regression =========================================
 
-#DF for DiD regression
+#Event dates
+consolidation_date <- as.Date("2019-07-01")
+refragmentation_date <- as.Date("2021-02-08")
+
+#Main DiD regression: before consolidation + consolidation period
+df_main <- df[df$date < refragmentation_date, ]
+
+df_main$post     <- ifelse(df_main$date >= consolidation_date, 1, 0)
+df_main$SMI_post <- df_main$SMI * df_main$post
+
+df_main_panel <- pdata.frame(df_main, index = c("ISIN", "date"))
+
+#Model 1: Main DiD without controls
+fit_1 <- plm(spread ~ SMI_post,
+             data = df_main_panel, model = "within", effect = "twoways")
+
+se_fit_1 <- coeftest(fit_1,
+                     vcov = vcovHC(fit_1, cluster = "group", type = "sss"))[, 2]
+
+#Model 2: Main DiD with controls
+fit_2 <- plm(spread ~ SMI_post + log_mcap + turnover + btm + leverage,
+             data = df_main_panel, model = "within", effect = "twoways")
+
+se_fit_2 <- coeftest(fit_2,
+                     vcov = vcovHC(fit_2, cluster = "group", type = "sss"))[, 2]
+
+
+#Robustness / regime model: full sample with separate re-fragmentation period
+df$consolidated <- ifelse(df$date >= consolidation_date &
+                            df$date < refragmentation_date, 1, 0)
+
+df$refragmented <- ifelse(df$date >= refragmentation_date, 1, 0)
+
+df$SMI_consolidated <- df$SMI * df$consolidated
+df$SMI_refragmented <- df$SMI * df$refragmented
+
 df_panel <- pdata.frame(df, index = c("ISIN", "date"))
 
-#DiD regression with two-way fixed effects, for FE-firm and FE-time
-#Model 1: Only treatment variable
-fit_1 <- plm(spread ~ SMI_post,
+#Model 3: Regime model without controls
+fit_3 <- plm(spread ~ SMI_consolidated + SMI_refragmented,
              data = df_panel, model = "within", effect = "twoways")
-se_fit_1 <- coeftest(fit_1, vcov = vcovHC(fit_1, cluster = "group", type = "sss"))[, 2]
 
-#Model 2: Treatment variable + controls
-fit_2 <- plm(spread ~ SMI_post + log_mcap + turnover + btm + leverage,
+se_fit_3 <- coeftest(fit_3,
+                     vcov = vcovHC(fit_3, cluster = "group", type = "sss"))[, 2]
+
+#Model 4: Regime model with controls
+fit_4 <- plm(spread ~ SMI_consolidated + SMI_refragmented +
+               log_mcap + turnover + btm + leverage,
              data = df_panel, model = "within", effect = "twoways")
-se_fit_2 <- coeftest(fit_2, vcov = vcovHC(fit_2, cluster = "group", type = "sss"))[, 2]
+
+se_fit_4 <- coeftest(fit_4,
+                     vcov = vcovHC(fit_4, cluster = "group", type = "sss"))[, 2]
+
 
 #Print output
-stargazer(list(fit_1, fit_2),
-          coef = list(fit_1$coefficients, fit_2$coefficients),
-          se   = list(se_fit_1, se_fit_2),
+stargazer(list(fit_1, fit_2, fit_3, fit_4),
+          coef = list(fit_1$coefficients, fit_2$coefficients,
+                      fit_3$coefficients, fit_4$coefficients),
+          se   = list(se_fit_1, se_fit_2, se_fit_3, se_fit_4),
           type = "latex",
           out  = "Latex/Inputs/Table3.tex",
-          title            = "Table 3: Effect of Market Consolidation on Stock Liquidity",
-          dep.var.labels   = "Bid-Ask Spread",
-          covariate.labels = c("SMI $\\times$ Post", "log(Mcap)", "Turnover", "BTM", "Leverage"),
+          title = "Table 3: Effect of Market Consolidation and Re-fragmentation on Stock Liquidity",
+          dep.var.labels = "Bid-Ask Spread",
+          covariate.labels = c("SMI $\\times$ Post",
+                               "SMI $\\times$ Consolidated",
+                               "SMI $\\times$ Re-fragmented",
+                               "log(Mcap)", "Turnover", "BTM", "Leverage"),
+          order = c("SMI_post", "SMI_consolidated", "SMI_refragmented",
+                    "log_mcap", "turnover", "btm", "leverage"),
           keep.stat = c("adj.rsq"),
-          report    = "vc*t",
+          report = "vc*t",
           add.lines = list(
-            c("Observations", length(fit_1$residuals), length(fit_2$residuals)),
-            c("Stock FE",   "Yes", "Yes"),
-            c("Day FE",     "Yes", "Yes"),
-            c("Cluster SE", "By stock", "By stock")
+            c("Sample", "Pre + consolidated", "Pre + consolidated", "Full", "Full"),
+            c("Controls", "No", "Yes", "No", "Yes"),
+            c("Observations", length(fit_1$residuals), length(fit_2$residuals),
+              length(fit_3$residuals), length(fit_4$residuals)),
+            c("Stock FE", "Yes", "Yes", "Yes", "Yes"),
+            c("Day FE", "Yes", "Yes", "Yes", "Yes"),
+            c("Cluster SE", "By stock", "By stock", "By stock", "By stock")
           ),
           notes.append = FALSE,
           notes = "$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01")

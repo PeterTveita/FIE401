@@ -1,41 +1,48 @@
 
 % Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy Institute. E-mail: marek.hlavac at gmail.com
-% Date and time: Mon, May 11, 2026 - 14:45:45
+% Date and time: Mon, May 11, 2026 - 16:33:12
 \begin{table}[!htbp] \centering 
-  \caption{Table 3: Effect of Market Consolidation on Stock Liquidity} 
+  \caption{Table 3: Effect of Market Consolidation and Re-fragmentation on Stock Liquidity} 
   \label{} 
-\begin{tabular}{@{\extracolsep{5pt}}lcc} 
+\begin{tabular}{@{\extracolsep{5pt}}lcccc} 
 \\[-1.8ex]\hline 
 \hline \\[-1.8ex] 
- & \multicolumn{2}{c}{\textit{Dependent variable:}} \\ 
-\cline{2-3} 
-\\[-1.8ex] & \multicolumn{2}{c}{Bid-Ask Spread} \\ 
-\\[-1.8ex] & (1) & (2)\\ 
+ & \multicolumn{4}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-5} 
+\\[-1.8ex] & \multicolumn{4}{c}{Bid-Ask Spread} \\ 
+\\[-1.8ex] & (1) & (2) & (3) & (4)\\ 
 \hline \\[-1.8ex] 
- SMI $\times$ Post & 0.0002$^{*}$ & 0.0003$^{**}$ \\ 
-  & t = 1.698 & t = 2.186 \\ 
-  & & \\ 
- log(Mcap) &  & $-$0.001$^{***}$ \\ 
-  &  & t = $-$3.225 \\ 
-  & & \\ 
- Turnover &  & $-$0.0003$^{***}$ \\ 
-  &  & t = $-$4.344 \\ 
-  & & \\ 
- BTM &  & 0.0001 \\ 
-  &  & t = 0.544 \\ 
-  & & \\ 
- Leverage &  & $-$0.00000 \\ 
-  &  & t = $-$0.247 \\ 
-  & & \\ 
+ SMI $\times$ Post & 0.0002 & 0.0003$^{**}$ &  &  \\ 
+  & t = 1.180 & t = 2.093 &  &  \\ 
+  & & & & \\ 
+ SMI $\times$ Consolidated &  &  & 0.0002 & 0.0002$^{*}$ \\ 
+  &  &  & t = 1.165 & t = 1.876 \\ 
+  & & & & \\ 
+ SMI $\times$ Re-fragmented &  &  & 0.0004$^{**}$ & 0.0004$^{**}$ \\ 
+  &  &  & t = 2.387 & t = 2.446 \\ 
+  & & & & \\ 
+ log(Mcap) &  & $-$0.001$^{***}$ &  & $-$0.001$^{***}$ \\ 
+  &  & t = $-$3.310 &  & t = $-$3.433 \\ 
+  & & & & \\ 
+ Turnover &  & $-$0.0003$^{***}$ &  & $-$0.0003$^{***}$ \\ 
+  &  & t = $-$4.982 &  & t = $-$4.660 \\ 
+  & & & & \\ 
+ BTM &  & 0.0002 &  & 0.0001 \\ 
+  &  & t = 0.659 &  & t = 0.496 \\ 
+  & & & & \\ 
+ Leverage &  & $-$0.00000 &  & $-$0.00000 \\ 
+  &  & t = $-$0.141 &  & t = $-$0.273 \\ 
+  & & & & \\ 
 \hline \\[-1.8ex] 
-Observations & 80748 & 80484 \\ 
-Stock FE & Yes & Yes \\ 
-Day FE & Yes & Yes \\ 
-Cluster SE & By stock & By stock \\ 
-Adjusted R$^{2}$ & $-$0.010 & 0.011 \\ 
+Sample & Pre + consolidated & Pre + consolidated & Full & Full \\ 
+Controls & No & Yes & No & Yes \\ 
+Observations & 55225 & 54961 & 79233 & 78969 \\ 
+Stock FE & Yes & Yes & Yes & Yes \\ 
+Day FE & Yes & Yes & Yes & Yes \\ 
+Cluster SE & By stock & By stock & By stock & By stock \\ 
+Adjusted R$^{2}$ & $-$0.011 & 0.018 & $-$0.009 & 0.013 \\ 
 \hline 
 \hline \\[-1.8ex] 
-\textit{Note:}  & \multicolumn{2}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
- & \multicolumn{2}{r}{*** p<0.01, ** p<0.05, * p<0.1.} \\ 
+\textit{Note:}  & \multicolumn{4}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
 \end{tabular} 
 \end{table} 

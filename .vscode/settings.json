@@ -22,7 +22,7 @@
     }
   ],
 
-  "latex-workshop.latex.autoBuild.run": "onFileChange",
+  "latex-workshop.latex.autoBuild.run": "never",
 
   "files.exclude": {
     "**/*.synctex.gz": true

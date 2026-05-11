@@ -1,0 +1,125 @@
+ISIN,Index,Company Common Name,Country of Headquarters,TRBC Industry Name
+CH0012221716,SMI,Abb Ltd,Switzerland,Heavy Electrical Equipment
+CH0012138605,SMI,Adecco Group AG,Switzerland,Employment Services
+CH0102484968,SMI,Julius Baer Gruppe AG,Switzerland,Banks
+CH0210483332,SMI,Compagnie Financiere Richemont SA,Switzerland,Apparel & Accessories
+CH0012138530,SMI,Credit Suisse Group AG,Switzerland,Banks
+CH0030170408,SMI,Geberit AG,Switzerland,Construction Supplies & Fixtures
+CH0010645932,SMI,Givaudan SA,Switzerland,Specialty Chemicals
+CH0012214059,SMI,Holcim AG,Switzerland,Construction Materials
+CH0013841017,SMI,Lonza Group AG,Switzerland,Biotechnology & Medical Research
+CH0038863350,SMI,Nestle SA,Switzerland,Food Processing
+CH0012005267,SMI,Novartis AG,Switzerland,Pharmaceuticals
+CH0012032048,SMI,Roche Holding AG,Switzerland,Pharmaceuticals
+CH0008742519,SMI,Swisscom AG,Switzerland,Integrated Telecommunications Services
+CH1256740924,SMI,SGS SA,Switzerland,Business Support Services
+CH0418792922,SMI,Sika AG,Switzerland,Specialty Chemicals
+CH0014852781,SMI,Swiss Life Holding AG,Switzerland,Life & Health Insurance
+CH0126881561,SMI,Swiss Re AG,Switzerland,Reinsurance
+CH0244767585,SMI,UBS Group AG,Switzerland,Investment Management & Fund Operators
+CH0012255151,SMI,Swatch Group AG,Switzerland,Apparel & Accessories
+CH0011075394,SMI,Zurich Insurance Group Ltd,Switzerland,Multiline Insurance & Brokers
+"CH0432492467,SMI,Alcon Inc,Switzerland,""Medical Equipment, Supplies & Distribution"""
+CH0024608827,SMI,Partners Group Holding AG,Switzerland,Investment Management & Fund Operators
+CH1430134226,SMI,Amrize AG,United States of America,Construction Materials
+"CH0025238863,SMI,Kuehne und Nagel International AG,Switzerland,""Courier, Postal, Air Freight & Land-based Logistics"""
+CH0025751329,SMI,Logitech International SA,Switzerland,Computer Hardware
+DE000A1EWWW0,DAX30,Adidas AG,Germany,Footwear
+DE0008404005,DAX30,Allianz SE,Germany,Multiline Insurance & Brokers
+DE000BASF111,DAX30,BASF SE,Germany,Diversified Chemicals
+DE000BAY0017,DAX30,Bayer AG,Germany,Pharmaceuticals
+DE0005200000,DAX30,Beiersdorf AG,Germany,Personal Products
+DE0005190003,DAX30,Bayerische Motoren Werke AG,Germany,Auto & Truck Manufacturers
+DE000CBK1001,DAX30,Commerzbank AG,Germany,Banks
+"DE0005439004,DAX30,Continental AG,Germany,""Auto, Truck & Motorcycle Parts"""
+DE0005810055,DAX30,Deutsche Boerse AG,Germany,Financial & Commodity Market Operators & Service Providers
+DE0005140008,DAX30,Deutsche Bank AG,Germany,Banks
+"DE0005552004,DAX30,Deutsche Post AG,Germany,""Courier, Postal, Air Freight & Land-based Logistics"""
+DE0005557508,DAX30,Deutsche Telekom AG,Germany,Integrated Telecommunications Services
+DE000ENAG999,DAX30,E.ON SE,Germany,Multiline Utilities
+DE0005785802,DAX30,Fresenius Medical Care AG,Germany,Healthcare Facilities & Services
+DE0005785604,DAX30,Fresenius SE & Co KGaA,Germany,Healthcare Facilities & Services
+DE0006047004,DAX30,Heidelberg Materials AG,Germany,Construction Materials
+DE0006048432,DAX30,Henkel AG & Co KGaA,Germany,Specialty Chemicals
+DE0006231004,DAX30,Infineon Technologies AG,Germany,Semiconductors
+DE0008232125,DAX30,Deutsche Lufthansa AG,Germany,Airlines
+DE000A2E4L75,DAX30,Linde AG (Pre-merger),Germany,Commodity Chemicals
+DE0007100000,DAX30,Mercedes-Benz Group AG,Germany,Auto & Truck Manufacturers
+DE0006599905,DAX30,Merck KGaA,Germany,Pharmaceuticals
+DE0008430026,DAX30,Muenchener Rueckversicherungs-Gesellschaft in Muenchen AG,Germany,Reinsurance
+DE0007037129,DAX30,RWE AG,Germany,Multiline Utilities
+DE0007164600,DAX30,SAP SE,Germany,Software
+DE0007236101,DAX30,Siemens AG,Germany,Electrical Components & Equipment
+DE0007500001,DAX30,thyssenkrupp AG,Germany,Iron & Steel
+"DE000A1ML7J1,DAX30,Vonovia SE,Germany,""Real Estate Rental, Development & Operations"""
+DE0007664039,DAX30,Volkswagen AG,Germany,Auto & Truck Manufacturers
+DE0007472060,DAX30,Wirecard AG,Germany,Business Support Services
+IE000S9YS762,DAX30,Linde PLC,United Kingdom,Commodity Chemicals
+DE000A0D9PT0,DAX30,MTU Aero Engines AG,Germany,Aerospace & Defense
+"DE000A0HN5C6,DAX30,Deutsche Wohnen SE,Germany,""Real Estate Rental, Development & Operations"""
+DE000A2E4K43,DAX30,Delivery Hero SE,Germany,Online Services
+DE000ENER6Y0,DAX30,Siemens Energy AG,Germany,Renewable Energy Equipment & Services
+NL0000235190,DAX30,Airbus SE,Netherlands,Aerospace & Defense
+DE000A1DAHH0,DAX30,Brenntag SE,Germany,Diversified Chemicals
+DE000DTR0CK8,DAX30,Daimler Truck Holding AG,Germany,Heavy Machinery & Vehicles
+DE0006602006,DAX30,GEA Group AG,Germany,Industrial Machinery & Equipment
+DE000A12DM80,DAX30,Scout24 SE,Germany,Online Services
+DE0008402215,DAX30,Hannover Rueck SE,Germany,Reinsurance
+DE000PAH0038,DAX30,Porsche Automobil Holding SE,Germany,Auto & Truck Manufacturers
+NL0015002SN0,DAX30,Qiagen NV,Netherlands,Biotechnology & Medical Research
+DE0007030009,DAX30,Rheinmetall AG,Germany,Aerospace & Defense
+DE000SHL1006,DAX30,Siemens Healthineers AG,Germany,Advanced Medical Equipment & Technology
+DE000SYM9999,DAX30,Symrise AG,Germany,Specialty Chemicals
+DE000ZAL1111,DAX30,Zalando SE,Germany,Online Services
+"FR0000120404,CAC40,Accor SA,France,""Hotels, Motels & Cruise Lines"""
+FR0000045072,CAC40,Credit Agricole SA,France,Banks
+FR0000120073,CAC40,L'Air Liquide Societe Anonyme pour l'Etude et l'Exploitation des Procedes Georges Claude SA,France,Commodity Chemicals
+NL0000235190,CAC40,Airbus SE,Netherlands,Aerospace & Defense
+FR001400X2S4,CAC40,Atos SE,France,IT Services & Consulting
+FR0000120644,CAC40,Danone SA,France,Food Processing
+FR0000131104,CAC40,BNP Paribas SA,France,Banks
+FR0000120172,CAC40,Carrefour SA,France,Food Retail & Distribution
+FR0000125338,CAC40,Capgemini SE,France,IT Services & Consulting
+FR0000120628,CAC40,AXA SA,France,Life & Health Insurance
+FR0000125486,CAC40,Vinci SA,France,Construction & Engineering
+"FR0000121667,CAC40,Essilorluxottica SA,France,""Medical Equipment, Supplies & Distribution"""
+FR0000120503,CAC40,Bouygues SA,France,Construction & Engineering
+FR0010208488,CAC40,Engie SA,France,Multiline Utilities
+"FR0013176526,CAC40,Valeo SE,France,""Auto, Truck & Motorcycle Parts"""
+GB00BDSFG982,CAC40,TechnipFMC PLC,United Kingdom,Oil Related Services and Equipment
+FR0000130809,CAC40,Societe Generale SA,France,Banks
+FR0000121485,CAC40,Kering SA,France,Apparel & Accessories Retailers
+FR0010307819,CAC40,Legrand SA,France,Electrical Components & Equipment
+FR0000121014,CAC40,LVMH Moet Hennessy Louis Vuitton SE,France,Apparel & Accessories
+FR001400AJ45,CAC40,Compagnie Generale des Etablissements Michelin SCA,France,Tires & Rubber Products
+LU1598757687,CAC40,ArcelorMittal SA,Luxembourg,Iron & Steel
+FR0000120321,CAC40,L'Oreal SA,France,Personal Products
+FR0000133308,CAC40,Orange SA,France,Integrated Telecommunications Services
+FR0000130577,CAC40,Publicis Groupe SA,France,Advertising & Marketing
+FR0000120693,CAC40,Pernod Ricard SA,France,Distillers & Wineries
+FR0000052292,CAC40,Hermes International SCA,France,Apparel & Accessories
+FR0000131906,CAC40,Renault SA,France,Auto & Truck Manufacturers
+FR0000073272,CAC40,Safran SA,France,Aerospace & Defense
+FR0000120578,CAC40,Sanofi SA,France,Pharmaceuticals
+FR0000125007,CAC40,Compagnie de Saint Gobain SA,France,Construction Supplies & Fixtures
+BE0003470755,CAC40,Solvay SA,Belgium,Diversified Chemicals
+NL0000226223,CAC40,STMicroelectronics NV,Netherlands,Semiconductors
+FR0000121972,CAC40,Schneider Electric SE,France,Electrical Components & Equipment
+FR0000121220,CAC40,Sodexo SA,France,Restaurants & Bars
+FR0000120271,CAC40,TotalEnergies SE,France,Integrated Oil & Gas
+FR0000121501,CAC40,Peugeot SA,France,Auto & Truck Manufacturers
+FR0013326246,CAC40,Unibail-Rodamco-Westfield SE,France,Commercial REITs
+FR0000124141,CAC40,Veolia Environnement SA,France,Multiline Utilities
+FR0000127771,CAC40,Vivendi SE,France,Entertainment Production
+FR0014003TT8,CAC40,Dassault Systemes SE,France,Software
+FR0011981968,CAC40,Worldline SA,France,Financial Technology (Fintech)
+FR0000121329,CAC40,Thales SA,France,Aerospace & Defense
+FR0000051807,CAC40,Teleperformance SE,France,Business Support Services
+FR0010220475,CAC40,Alstom SA,France,Heavy Machinery & Vehicles
+NL00150001Q9,CAC40,Stellantis NV,Netherlands,Auto & Truck Manufacturers
+FR0006174348,CAC40,Bureau Veritas SA,France,Business Support Services
+NL0006294274,CAC40,Euronext NV,Netherlands,Financial & Commodity Market Operators & Service Providers
+FR0014000MR3,CAC40,Eurofins Scientific SE,Luxembourg,Biotechnology & Medical Research
+FR0000130452,CAC40,Eiffage SA,France,Construction & Engineering
+FR0013326246,CAC40,Unibail-Rodamco-Westfield SE,France,Commercial REITs
+","""","""","""","""""

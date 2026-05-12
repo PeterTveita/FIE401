@@ -1,0 +1,18 @@
+\section{Data}
+\label{sec:data}
+
+We use daily firm-level data from LSEG Workspace for constituents of the Swiss Market Index (SMI), CAC40, and DAX30 from 2 January 2019 to 30 December 2021. Index membership comes from a separate constituents file, and CHF/EUR exchange rates come from the exchange rate file. We merge these sources by firm and date to construct the final firm-day panel. SMI stocks form the treatment group, while CAC40 and DAX30 stocks form the control group.
+
+The sample period is chosen to cover both regulatory events while keeping the analysis close to the shocks of interest. We do not extend the pre-period back to 2018 because a longer window may introduce additional changes in market conditions and firm characteristics that are less directly related to the equivalence events.
+
+We clean the data in the following ways. We remove duplicate firm-day observations and observations with missing or zero trading volume to ensure that liquidity measures are based on valid trading days. We keep stocks with at least 100 trading days and an average price of at least one euro to exclude very thinly traded stocks and potential data errors. We also drop ISIN NL0000235190 that appears in both CAC40 and DAX30, and we multiply DAX30 trading volume by ten to correct the data scaling issue. SMI prices are converted from Swiss francs to euros using the daily CHF/EUR rate. All variables are winsorized at the 0.5\% and 99.5\% level. These limits reduce the influence of extreme observations while preserving more of the cross-sectional variation than wider filters such as 1\%/99\% or 5\%/95\%.
+
+Our main liquidity measure is the quoted bid-ask spread, computed as $(ask - bid)/((ask + bid)/2)$ and reported in basis points. We use the quoted spread as the primary outcome because it directly measures the cost of immediate execution, which is the liquidity dimension most closely linked to venue competition. If competition between venues improves liquidity, this should be reflected in tighter quoted spreads. We do not use turnover as an outcome because trading volume may mechanically reflect the venue structure itself when orders are split across venues. Instead, we keep turnover as a control variable.
+We also use Amihud illiquidity, calculated as absolute daily return divided by euro trading volume and scaled by $10^9$, as a robustness measure because it captures the price-impact dimension of liquidity. As control variables, we use log market capitalisation, annualised turnover, book-to-market, and leverage because firm size, trading activity, valuation, and financial risk are standard determinants of liquidity and may change over time. After filtering, the treatment group consists of 22 SMI constituents with 16,588 firm-day observations, and the control group consists of 85 CAC40 and DAX30 constituents with 61,622 firm-day observations. We divide the sample into a pre-period, a consolidation period, and a re-fragmentation period based on the two regulatory events.
+
+\vspace{0.8cm}
+\input{Inputs/Table1}
+\TableOneDescription
+\\
+
+\autoref{tab:summary} reports summary statistics for the main variables. SMI stocks have substantially narrower spreads on average than the control stocks (3.98 versus 21.34 basis points). The two groups are similar in market capitalisation, turnover, and leverage, while SMI stocks have lower book-to-market values. These differences are considered in the empirical analysis.

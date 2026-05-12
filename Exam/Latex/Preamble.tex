@@ -70,12 +70,12 @@
 
 \fancyhf{}
 \fancyfoot[C]{\thepage}
+\setlength{\headheight}{14.5pt}
 
-\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0pt}
 
-% Example if candidate number/header is needed:
-% \fancyhead[L]{Candidate number: XX}
+\fancyhead[L]{Candidates: 251, 269, 275, 380}
 
 % -------------------------
 % Section spacing
@@ -95,22 +95,6 @@
 \setlength{\cftbeforesubsecskip}{1pt}
 
 % -------------------------
-% Figure/table numbering
-% -------------------------
-\usepackage{chngcntr}
-
-\counterwithin{figure}{section}
-\counterwithin{table}{section}
-
-% -------------------------
-% Bibliography
-% APA 7 style, requires biber
-% -------------------------
-\usepackage[backend=biber, style=apa]{biblatex}
-\DeclareLanguageMapping{american}{american-apa}
-\addbibresource{References.bib}
-
-% -------------------------
 % Links
 % Load late
 % -------------------------
@@ -123,6 +107,11 @@
     allcolors=linkcolor,
     pdfborder={0 0 0}
 ]{hyperref}
+
+\renewcommand{\sectionautorefname}{Section}
+\renewcommand{\subsectionautorefname}{Section}
+\renewcommand{\figureautorefname}{Figure}
+\renewcommand{\tableautorefname}{Table}
 
 % -------------------------
 % General formatting

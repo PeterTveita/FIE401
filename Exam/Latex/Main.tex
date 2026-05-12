@@ -1,25 +1,27 @@
 \documentclass[12pt]{article}
 
 \input{Preamble}
+\input{Inputs/TableDescriptions}
 
 \begin{document}
 
 \include{Inputs/Titlepage}
 
+\begingroup
+\hypersetup{linkcolor=black}
 \tableofcontents
+\listoffigures
+\listoftables
+\endgroup
 
-\include{Sections/1 Abstract}
+\include{Sections/1_Abstract}
 
-\include{Sections/2 Intro}
+\include{Sections/2_Intro}
 
-\include{Sections/3 Data}
+\include{Sections/3_Data}
 
-\include{Sections/4 Analysis}
+\include{Sections/4_Analysis}
 
-\include{Sections/5 Conclusion}
-
-% \nocite{*} %Use if no parencites  are used
-
-% \printbibliography %Use if parencites are used
+\include{Sections/5_Conclusion}
 
 \end{document} 

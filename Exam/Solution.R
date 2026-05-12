@@ -1,4 +1,4 @@
-#AI Declaration: AI has been used to debug and optimize the code. In addition, AI has been used to check for potential errors and spelling mistakes in the code and comments.
+#AI Declaration: AI has been used to debug and optimize the code. In addition, AI has been used to check for potential errors and spelling mistakes in the code and comments, as well as to format tables for latex.
 
 #========================================== Solution for Term Paper FIE401 ===========================================
 
@@ -13,12 +13,9 @@ require(stargazer)
 require(car)
 require(ggplot2)
 
-
 #============================================== Part 1 - Cleaning data ===============================================
 #Working directory set to same folder as this R file
-if (rstudioapi::isAvailable()) {
-  setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-}
+setwd("/Users/petertveita/Documents/GitHub/FIE401/Exam")
 
 #Loading data
 isins     <- read.csv("FIE401 EXAM attach 3 isins.csv",    stringsAsFactors = FALSE)
@@ -106,7 +103,7 @@ df$turnover <- wins(df$turnover)
 df$btm      <- wins(df$btm)
 df$leverage <- wins(df$leverage)
 
-#================================================ Part 2 - Pre period ================================================
+#====================================================== Part 2 - =====================================================
 
 #=========================================== Part 2.1 - Summary statistics ===========================================
 #Variables
@@ -173,7 +170,7 @@ stargazer(models_pre,
           type                   = "latex",
           out                    = "Latex/Inputs/Table2.tex",
           label                  = "tab:pre-period",
-          title                  = "Pre-period Comparison --- SMI vs. CAC40/DAX30",
+          title                  = "Pre-period Comparison - SMI vs. CAC40/DAX30",
           dep.var.caption        = "",
           dep.var.labels.include = FALSE,
           column.labels          = c("Bid-Ask Spread", "log(Mcap)", "Turnover", "BTM", "Leverage (D/E)"),
@@ -184,7 +181,7 @@ stargazer(models_pre,
           add.lines              = list(c("Pre-period", rep("Yes", length(tab2_vars))),
                                         c("Cluster SE", rep("By stock", length(tab2_vars)))),
           notes.append           = FALSE,
-          notes                  = "*p<0.1; **p<0.05; ***p<0.01")
+          notes = "*$p < 0.1$; **$p < 0.05$; ***$p < 0.01$")
 
 #======================================== Part 2.3 - Parallel trends figure ========================================
 
@@ -288,7 +285,7 @@ stargazer(list(fit_1, fit_2, fit_3, fit_4, fit_5, fit_6),
           se               = list(se_fit_1, se_fit_2, se_fit_3, se_fit_4, se_fit_5, se_fit_6),
           type             = "latex",
           out              = "Latex/Inputs/Table3.tex",
-          title            = "Table 3: Effect of Market Consolidation and Re-fragmentation on Stock Liquidity",
+          title            = "Effect of Market Consolidation and Re-fragmentation on Stock Liquidity",
           font.size        = "scriptsize",
           table.placement  = "H",
           label            = "tab:did",
@@ -316,4 +313,44 @@ stargazer(list(fit_1, fit_2, fit_3, fit_4, fit_5, fit_6),
                                   c("Day FE", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"),
                                   c("Cluster SE", "By stock", "By stock", "By stock", "By stock", "By stock", "By stock")),
           notes.append     = FALSE,
-          notes            = "*p<0.1; **p<0.05; ***p<0.01")
+          notes            = "*$p < 0.1$; **$p < 0.05$; ***$p < 0.01$")
+
+#============== ROBUSTNESS: Exclude COVID period (internal reference, not in report) ==============
+# Re-estimates Models 1-2 from Table 3 on a sample excluding February-June 2020 to confirm that the main consolidation effect is not driven by the pandemic.
+
+covid_start <- as.Date("2020-02-01")
+covid_end   <- as.Date("2020-06-30")
+
+df_no_covid <- df_main[!(df_main$date >= covid_start & df_main$date <= covid_end), ]
+df_no_covid_panel <- pdata.frame(df_no_covid, index = c("ISIN", "date"))
+
+# Model R1: Main DiD without controls, excluding COVID
+fit_r1 <- plm(spread ~ SMI_post,
+              data = df_no_covid_panel, model = "within", effect = "twoways")
+se_fit_r1 <- coeftest(fit_r1, vcov = vcovHC(fit_r1, cluster = "group", type = "sss"))[, 2]
+
+# Model R2: Main DiD with controls, excluding COVID
+fit_r2 <- plm(spread ~ SMI_post + log_mcap + turnover + btm + leverage,
+              data = df_no_covid_panel, model = "within", effect = "twoways")
+se_fit_r2 <- coeftest(fit_r2, vcov = vcovHC(fit_r2, cluster = "group", type = "sss"))[, 2]
+
+# Print to console only
+stargazer(list(fit_r1, fit_r2),
+          coef             = list(fit_r1$coefficients, fit_r2$coefficients),
+          se               = list(se_fit_r1, se_fit_r2),
+          type             = "text",
+          title            = "Internal Robustness Check: Excluding COVID Period (Feb-Jun 2020)",
+          dep.var.labels   = "Bid-Ask Spread",
+          covariate.labels = c("SMI x Post", "log(Mcap)", "Turnover", "BTM", "Leverage (D/E)"),
+          keep.stat        = c("adj.rsq"),
+          omit.stat        = c("f", "ser"),
+          report           = "vc*t",
+          add.lines        = list(c("Sample",       "Ex. COVID", "Ex. COVID"),
+                                  c("Controls",     "No", "Yes"),
+                                  c("Observations", length(fit_r1$residuals), length(fit_r2$residuals)),
+                                  c("Stock FE",     "Yes", "Yes"),
+                                  c("Day FE",       "Yes", "Yes"),
+                                  c("Cluster SE",   "By stock", "By stock")),
+          notes.append     = FALSE,
+          notes            = "*$p < 0.1$ - **$p < 0.05$ - ***$p < 0.01$")
+#==================================================================================================

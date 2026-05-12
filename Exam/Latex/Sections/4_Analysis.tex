@@ -1,0 +1,56 @@
+\section{Analysis}
+\label{sec:analysis}
+
+\subsection{Pre-period balance}
+\label{sec:pre-period-balance}
+
+\autoref{tab:pre-period} presents OLS regressions of each variable on the SMI dummy using only observations before the July 2019 event. Standard errors are clustered at the stock level. SMI stocks have significantly lower bid-ask spreads than the control group in the pre-period, by about 19 basis points. They also have lower book-to-market ratios. For log market capitalisation, turnover, and leverage, the differences are not statistically significant.
+
+\vspace{0.5cm}
+\input{Inputs/Table2}
+\TableTwoDescription
+\\
+
+These differences show that SMI stocks are more liquid already before treatment. This is important for interpretation, but it does not by itself invalidate the difference-in-differences design. Since our main regressions include stock fixed effects, time-invariant level differences between stocks are absorbed. The key identifying assumption is therefore that SMI and control stocks would have followed parallel changes in liquidity absent the consolidation.
+
+\subsection{Parallel trends}
+\label{sec:parallel-trends}
+
+\autoref{fig:parallel-trends} plots average monthly bid-ask spreads for SMI and the control group. In the pre-period, the two series move similarly. After the 1 July 2019 consolidation, SMI spreads increase relative to the control group. The divergence is visible already in the second half of 2019, before the COVID-19 pandemic. This supports the parallel trends assumption used in the DiD analysis.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Figure1.pdf}
+    \caption{Average Monthly Bid-Ask Spreads}
+    \label{fig:parallel-trends}
+\end{figure}
+
+\subsection{Main results}
+\label{sec:main-results}
+
+\autoref{tab:did} presents the main difference-in-differences results. Columns 1 and 2 estimate the effect of the July 2019 consolidation on bid-ask spreads. Columns 3 and 4 use the full sample and allow the consolidation and re-fragmentation periods to have separate effects. Columns 5 and 6 use Amihud illiquidity as an alternative liquidity measure. All specifications include stock and day fixed effects, and standard errors are clustered at the stock level.
+
+\input{Inputs/Table3}
+\TableThreeDescription
+\\
+
+In our preferred specification with controls (Column 2), the coefficient on SMI $\times$ Post is 2.66 and statistically significant at the 5\% level. This means that the consolidation increased SMI bid-ask spreads by about 2.7 basis points relative to the control group. Without controls (Column 1), the coefficient is positive but not statistically significant.
+
+The full-sample specification gives a similar interpretation. In Column 4, SMI $\times$ Consolidated is positive and significant at the 10\% level. The re-fragmentation coefficient is also positive and significant at the 1\% level. This means that the 2021 partial re-fragmentation did not reverse the spread increase. The result suggests that the post-2021 market structure did not return to the same liquidity environment as before July 2019.
+
+Columns 5 and 6 repeat the main analysis using Amihud illiquidity. The coefficient is positive and significant at the 10\% level in the specification with controls. This supports the main conclusion that consolidation reduced liquidity, although the evidence is weaker than for bid-ask spreads. The control variables also have intuitive signs. Larger firms and stocks with higher turnover tend to have lower spreads, consistent with standard liquidity patterns.
+Taken together, the consolidation reduced rather than improved liquidity for SMI stocks relative to the control group.
+
+\subsection{Unobserved factors at the time of the equivalence lapse}
+\label{sec:unobserved-factors}
+
+A concern with the DiD interpretation is that other events during the sample period may affect SMI and control stocks differently. Examples include the COVID-19 pandemic, Brexit-related changes in European trading, and sector-specific shocks, since the SMI differs from CAC40 and DAX30 in industry composition. Day fixed effects absorb shocks that affect both groups equally, but they do not remove shocks that affect the groups differently. The most important concern is COVID-19, because it occurs during the consolidation period and directly affects market liquidity.
+
+Three points reduce the COVID concern. First, \autoref{fig:parallel-trends} shows that the spread divergence starts in the second half of 2019, before the pandemic. Second, the COVID spike in March 2020 is visible in both groups, so it is not only an SMI shock. Third, we re-estimate Columns 1 and 2 of \autoref{tab:did} after excluding February--June 2020. In the specification with controls, the SMI $\times$ Post coefficient increases to 4.03 (t = 3.02), significant at the 1\% level (untabulated), compared with 2.66 (t = 1.98) in the main specification. This suggests that the main result is not driven by COVID. If anything, the COVID months weaken the estimated effect.
+
+\subsection{Fundamental differences and the asymmetry between consolidation and re-fragmentation}
+\label{sec:fundamental-differences}
+
+A second concern is that SMI stocks differ from CAC40 and DAX30 stocks in ways that also affect liquidity. For example, the Swiss index is heavily weighted toward pharmaceuticals and large universal banks, while DAX30 has historically been more industrial and CAC40 more diversified. The SMI is also more concentrated, meaning that liquidity developments in a few large firms can have greater influence on the treatment group. These differences may produce asymmetric responses to shocks such as COVID-19 or changes in global risk sentiment. We account for this by including stock fixed effects, which absorb time-invariant firm differences, and by adding time-varying controls such as market capitalisation, turnover, book-to-market, and leverage. The pre-period balance test in \autoref{tab:pre-period} also shows that the groups are similar on several important observables. Still, the estimates should be interpreted as relative effects for SMI stocks compared with CAC40 and DAX30 stocks.
+
+The difference between the consolidation and re-fragmentation estimates is also important. The 2021 event did not simply return the market to the pre-2019 situation. Before July 2019, Swiss shares could trade on several EU venues. After February 2021, only UK venues regained access, possibly with additional post-Brexit transaction costs. The re-fragmentation was therefore partial. This provides a plausible explanation for why spreads did not fall back after 2021: the degree of venue competition was still lower than before the equivalence lapse.

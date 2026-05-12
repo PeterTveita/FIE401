@@ -1,7 +1,7 @@
 # Context: FIE401 Hjemmeeksamen — Markedsfragmentering og aksjelikviditet
 
-**Last updated:** 2026-05-11
-**Status:** Under arbeid — R-kode ferdig, LaTeX-rapport gjenstår
+**Last updated:** 2026-05-12
+**Status:** Under arbeid — R-kode revidert og fikset, LaTeX-rapport gjenstår
 
 ---
 
@@ -54,10 +54,14 @@ Innleveres som: R-fil (.R), rapport (.pdf), presentasjon (.pdf).
 - ✅ Kontrollvariabler (log_mcap, turnover, btm, leverage)
 - ✅ DiD-variabler (SMI, post, SMI_post)
 - ✅ Winsorize (0.5%/99.5%)
-- ✅ Tabell 1 — describe() + stargazer → Table1A.tex (SMI) + Table1B.tex (CAC/DAX)
+- ✅ Tabell 1 — describe() + writeLines → Table1.tex (ett panel m/ Panel A: SMI, Panel B: CAC40/DAX30)
 - ✅ Tabell 2 — OLS pre-periode (var ~ SMI) med vcovCL clustret per ISIN → Table2.tex
 - ✅ Tabell 3 — DiD plm() two-way FE + vcovHC clustret per group → Table3.tex
-- 🔲 LaTeX-rapport (Abstract, Intro, Data, Analysis, Conclusion)
+- ✅ DAX30 volumkorreksjon lagt inn (×10, linje 58)
+- ✅ Amihud-koeffisienter rettet (10× lavere etter volumfiks)
+- 🔲 Mangler kode for Table_Robustness.tex i Solution.R (KRITISK — filen finnes men har ingen R-kode)
+- 🔲 Tabell 1 er i Analysis-seksjonen — skal være i Data-seksjonen iflg. oppgaven
+- 🔲 LaTeX-rapport (Abstract, Intro, Data, Analysis, Conclusion — kun section-stubs)
 - 🔲 Presentasjon (.pdf)
 
 ---
@@ -70,12 +74,18 @@ Innleveres som: R-fil (.R), rapport (.pdf), presentasjon (.pdf).
 | 2026-05-11 | Gjennomgikk forelesningsmateriell (Week 11 DiD, Week 8 Panel, 2020-fasit) |
 | 2026-05-11 | Bygget Solution.R: datarensing, variabler, winsorize, Tabell 1 |
 | 2026-05-11 | Fullførte Tabell 2 (pre-periode OLS) og Tabell 3 (DiD plm) i Solution.R |
+| 2026-05-12 | Gjennomgikk Solution.R mot eksamensoppgaven — identifiserte feil og mangler |
+| 2026-05-12 | Lagt inn DAX30 volumkorreksjon (×10) per forelesers e-post — påvirker amihud og turnover |
+| 2026-05-12 | Reviderte Tabell 1: erstattet Table1A/B.tex med én kombinert Table1.tex via writeLines |
+| 2026-05-12 | Vurderte log(Amihud) — forkastet, foreleseren bruker råverdier i DiD-regresjoner |
+| 2026-05-12 | Verifiserte at DescTools::Winsorize val= fungerer korrekt i installert versjon |
 
 ---
 
 ## Decisions Made
 
-- **Likviditetsmål:** Bid-ask spread (primær) — direkte i data, mest brukt i litteraturen. Amihud droppet.
+- **Likviditetsmål:** Bid-ask spread (primær) + Amihud illiquidity (robusthet, modell 5–6 i Tabell 3)
+- **Amihud — ingen log-transformasjon:** Foreleseren bruker råverdier i DiD-regresjoner (QTE_DVOL rå i 2020-fasit, AVOL rå i uke 11-lab). Log er teorietisk forsvarlig men bryter med kurskonvensjonen.
 - **Winsorize:** 0.5%/99.5% — følger 2020-fasiten
 - **Stock filter:** ≥100 handelsdager og snittpris ≥1 EUR — unngår penny stocks og datafeil
 - **Valutakurs:** CHF/pris delt på chf_eur (CHF per EUR) for å konvertere til EUR
@@ -91,7 +101,8 @@ Innleveres som: R-fil (.R), rapport (.pdf), presentasjon (.pdf).
 
 ## Open Questions / Blockers
 
-- Bør re-fragmentering (Feb 2021) inkluderes som robusthetssjekk i Tabell 3?
+- **KRITISK:** Kode for Table_Robustness.tex mangler i Solution.R — filen finnes i LaTeX men er ikke reproduserbar
+- Tabell 1 bør flyttes til Data-seksjonen (nå i Analysis) — krever LaTeX-endring i seksjonsfiler
 - LaTeX-rapport ikke startet — innlevering 13. mai kl. 14:00
 
 ---
@@ -99,8 +110,7 @@ Innleveres som: R-fil (.R), rapport (.pdf), presentasjon (.pdf).
 ## Key Files & Resources
 
 - `Exam/Solution.R` — R-kode (komplett)
-- `Exam/Latex/Inputs/Table1A.tex` — Tabell 1, SMI
-- `Exam/Latex/Inputs/Table1B.tex` — Tabell 1, CAC40/DAX30
+- `Exam/Latex/Inputs/Table1.tex` — Tabell 1, kombinert panel (genereres fra R)
 - `Exam/Latex/Inputs/Table2.tex` — Tabell 2, pre-periode sammenligning
 - `Exam/Latex/Inputs/Table3.tex` — Tabell 3, DiD-regresjon
 - `Exam/FIE401 Hjemmeeksamen (12t +) V.2026.pdf` — eksamensoppgaven
@@ -114,7 +124,9 @@ Innleveres som: R-fil (.R), rapport (.pdf), presentasjon (.pdf).
 ## Notes
 
 - Data: 108 aksjer etter filter, 80 761 obs, datoer ca. jan 2019 – aug 2021
-- Tabell 2-funn: SMI hadde lavere spread (***), høyere turnover (***), lavere btm (**) i pre-perioden — gruppene er ikke perfekt balanserte, motiverer firm-FE
+- Tabell 2-funn etter DAX30-fiks: SMI hadde lavere spread (***), lavere btm (**) — men turnover-forskjellen er nå IKKE signifikant (0.133, t=0.61). Styrker parallel trends-argumentet.
+- Tabell 3-funn: Bid-ask spread økte ~2.7 bps for SMI etter konsolidering (sign. med kontroller). Re-fragmentering ga enda større økning (~4.4 bps***). Amihud-koeffisienter ~1–2 (var ~12–20 før volumfiks).
+- Regime-modell (modell 3–4): inkludert i Tabell 3 som robusthet for hele perioden
 - Negative priser finnes ikke i dette datasettet (0 tilfeller), men håndteres uansett
 - `rstudioapi::getActiveDocumentContext()$path` brukes for portabel setwd
 - DescTools::Winsorize bruker `val = quantile(...)` på denne R-versjonen (ikke `probs =`)

@@ -1,0 +1,35 @@
+\newcommand{\TableOneDescription}{%
+\par\smallskip
+\noindent\makebox[\textwidth][c]{%
+\begin{minipage}{0.95\textwidth}
+\scriptsize
+This table shows the summary statistics for the variables used in this study. Panel A displays the
+results for the SMI treatment group, while Panel B provides a summary for the CAC40/DAX30
+control group. Bid-Ask Spread is measured in basis points, log(Mcap) is log market capitalisation in
+billion EUR, Turnover is annualised share turnover, BTM is book-to-market, and Leverage is total
+debt to common equity. Variables have been winsorized at the 0.5\% level.
+\end{minipage}
+}
+}
+
+\newcommand{\TableTwoDescription}{%
+\par\smallskip
+\noindent\makebox[\textwidth][c]{%
+\begin{minipage}{0.95\textwidth}
+\scriptsize
+This table shows the results of OLS regressions of each variable on an SMI indicator for the pre-event
+period. The SMI indicator is equal to 1 for SMI constituents and 0 for CAC40/DAX30 constituents.
+Detailed variable definitions can be found in \autoref{tab:summary}. Variables have been winsorized at the 0.5\% level. Standard errors are clustered at the stock (ISIN) level.
+\end{minipage}
+}
+}
+
+\newcommand{\TableThreeDescription}{%
+\par\smallskip
+\noindent\makebox[\textwidth][c]{%
+\begin{minipage}{0.95\textwidth}
+\scriptsize
+This table shows the results of two-way fixed effects difference-in-differences regressions. SMI $\times$ Post is equal to 1 for SMI constituents after 1 July 2019, and 0 otherwise. SMI $\times$ Consolidated and SMI $\times$ Re-fragmented are equal to 1 for SMI constituents in the consolidation period and post-re-fragmentation period, respectively. Columns (1)--(4) use the quoted bid-ask spread in basis points, while Columns (5)--(6) use Amihud illiquidity. All regressions include stock and day fixed effects.
+\end{minipage}
+}
+}

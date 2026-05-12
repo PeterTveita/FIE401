@@ -11,11 +11,14 @@ require(lmtest)
 require(sandwich)
 require(stargazer)
 require(car)
+require(ggplot2)
 
 
 #============================================== Part 1 - Cleaning data ===============================================
 #Working directory set to same folder as this R file
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+if (rstudioapi::isAvailable()) {
+  setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+}
 
 #Loading data
 isins     <- read.csv("FIE401 EXAM attach 3 isins.csv",    stringsAsFactors = FALSE)
@@ -51,8 +54,23 @@ stock_filter <- df %>% group_by(ISIN) %>%
 
 df <- df[df$ISIN %in% stock_filter$ISIN, ]
 
+#Correcting DAX30 volume: reported volume is understated by factor of 10
+df$volume[df$Index == "DAX30"] <- df$volume[df$Index == "DAX30"] * 10
+
+#========================================== Part 1.2 - Variable construction ==========================================
 #Converting from CHF (swiss franc) to EUR (euro)
 df$prc_eur <- ifelse(df$Index == "SMI", df$prc / df$chf_eur, df$prc)
+
+#Calculating Amihud illiquidity as absolute return divided by euro trading volume
+df <- df %>%
+  arrange(ISIN, date) %>%
+  group_by(ISIN) %>%
+  mutate(ret = return_index / dplyr::lag(return_index) - 1) %>%
+  ungroup()
+
+df$eur_volume <- df$prc_eur * df$volume * 1000
+df$amihud     <- abs(df$ret) / df$eur_volume * 1e9
+df$amihud[!is.finite(df$amihud) | df$amihud < 0] <- NA
 
 #Calculating the bid-ask spread
 df$spread <- (df$ask - df$bid) / ((df$ask + df$bid) / 2)
@@ -82,6 +100,7 @@ df <- df[complete.cases(df[, c("spread", "log_mcap", "turnover", "btm", "leverag
 wins <- function(x) {DescTools::Winsorize(x, val = quantile(x, probs = c(0.005, 0.995), na.rm = TRUE))}
 
 df$spread   <- wins(df$spread)
+df$amihud   <- wins(df$amihud)
 df$log_mcap <- wins(df$log_mcap)
 df$turnover <- wins(df$turnover)
 df$btm      <- wins(df$btm)
@@ -92,25 +111,40 @@ df$leverage <- wins(df$leverage)
 #=========================================== Part 2.1 - Summary statistics ===========================================
 #Variables
 tab1_vars <- c("spread", "log_mcap", "turnover", "btm", "leverage")
+var_labels <- c("Bid-Ask Spread", "log(Mcap)", "Turnover", "BTM", "Leverage (D/E)")
 
 #Summary of statistics for SMI and control group
-stats_smi <- describe(df[df$SMI == 1, tab1_vars])[, c("n","mean","median","sd","min","max")]
-stats_ctl <- describe(df[df$SMI == 0, tab1_vars])[, c("n","mean","median","sd","min","max")]
+stats_smi <- round(describe(df[df$SMI == 1, tab1_vars])[, c("n","mean","median","sd","min","max")], 3)
+stats_ctl <- round(describe(df[df$SMI == 0, tab1_vars])[, c("n","mean","median","sd","min","max")], 3)
 
-#Print to console
-stargazer(as.data.frame(round(stats_smi, 3)),
-          type    = "latex",
-          out     = "Latex/Inputs/Table1A.tex",
-          summary = FALSE,
-          title   = "Table 1A: Summary Statistics - SMI",
-          label   = "tab:summary-smi")
+n_smi <- formatC(stats_smi$n[1], format = "d", big.mark = ",")
+n_ctl <- formatC(stats_ctl$n[1], format = "d", big.mark = ",")
 
-stargazer(as.data.frame(round(stats_ctl, 3)),
-          type    = "latex",
-          out     = "Latex/Inputs/Table1B.tex",
-          summary = FALSE,
-          title   = "Table 1B: Summary Statistics - CAC40/DAX30",
-          label   = "tab:summary-control")
+fmt_row <- function(label, stats, i) {
+  paste0(label, " & ", stats$mean[i], " & ", stats$median[i], " & ",
+         stats$sd[i], " & ", stats$min[i], " & ", stats$max[i], " \\\\")
+}
+
+writeLines(c(
+  "\\begin{table}[H] \\centering",
+  "  \\caption{Summary Statistics}",
+  "  \\label{tab:summary}",
+  "\\small",
+  "\\begin{tabular}{@{\\extracolsep{5pt}}lcccccc}",
+  "\\\\[-1.8ex]\\hline",
+  "\\hline \\\\[-1.8ex]",
+  " & Mean & Median & SD & Min & Max \\\\",
+  "\\hline \\\\[-1.8ex]",
+  paste0("\\multicolumn{6}{l}{\\textit{Panel A: SMI (N = ", n_smi, ")}} \\\\[3pt]"),
+  sapply(seq_along(var_labels), function(i) fmt_row(var_labels[i], stats_smi, i)),
+  "\\hline \\\\[-1.8ex]",
+  paste0("\\multicolumn{6}{l}{\\textit{Panel B: CAC40/DAX30 (N = ", n_ctl, ")}} \\\\[3pt]"),
+  sapply(seq_along(var_labels), function(i) fmt_row(var_labels[i], stats_ctl, i)),
+  "\\hline",
+  "\\hline \\\\[-1.8ex]",
+  "\\end{tabular}",
+  "\\end{table}"
+), "Latex/Inputs/Table1.tex")
 
 #========================================= Part 2.2 - Pre-period comparison ==========================================
 
@@ -139,19 +173,53 @@ stargazer(models_pre,
           type                   = "latex",
           out                    = "Latex/Inputs/Table2.tex",
           label                  = "tab:pre-period",
-          title                  = "Table 2: Pre-period Comparison --- SMI vs. CAC40/DAX30",
+          title                  = "Pre-period Comparison --- SMI vs. CAC40/DAX30",
           dep.var.caption        = "",
           dep.var.labels.include = FALSE,
-          column.labels          = c("Spread", "log(Mcap)", "Turnover", "BTM", "Leverage (D/E)"),
+          column.labels          = c("Bid-Ask Spread", "log(Mcap)", "Turnover", "BTM", "Leverage (D/E)"),
           covariate.labels       = "SMI",
           keep                   = "SMI",
-          omit.stat              = c("f", "ser"),
-          add.lines              = list(c("Pre-period", rep("Yes", length(tab2_vars))),c("Cluster SE", rep("By stock", length(tab2_vars)))),
+          omit.stat              = c("f", "ser", "rsq"),
+          report                 = "vc*t",
+          add.lines              = list(c("Pre-period", rep("Yes", length(tab2_vars))),
+                                        c("Cluster SE", rep("By stock", length(tab2_vars)))),
           notes.append           = FALSE,
           notes                  = "*p<0.1; **p<0.05; ***p<0.01")
 
+#======================================== Part 2.3 - Parallel trends figure ========================================
+
+df_plot <- df %>%
+  mutate(
+    group    = ifelse(SMI == 1, "SMI", "CAC40/DAX30"),
+    year_mon = as.Date(format(date, "%Y-%m-01"))
+  ) %>%
+  group_by(year_mon, group) %>%
+  summarise(mean_spread = mean(spread, na.rm = TRUE), .groups = "drop")
+
+consolidation_label  <- as.Date("2019-07-01")
+refragmentation_label <- as.Date("2021-02-08")
+y_top <- max(df_plot$mean_spread) * 0.97
+
+fig1 <- ggplot(df_plot, aes(x = year_mon, y = mean_spread,
+                             color = group, linetype = group)) +
+  geom_line(linewidth = 0.7) +
+  geom_vline(xintercept = consolidation_label,  linetype = "dashed", color = "black") +
+  geom_vline(xintercept = refragmentation_label, linetype = "dotted", color = "black") +
+  annotate("text", x = consolidation_label,  y = y_top,
+           label = "Consolidation", hjust = -0.05, size = 3) +
+  annotate("text", x = refragmentation_label, y = y_top,
+           label = "Re-fragmentation", hjust = -0.05, size = 3) +
+  scale_color_manual(values = c("SMI" = "steelblue", "CAC40/DAX30" = "firebrick")) +
+  labs(x = NULL, y = "Average Bid-Ask Spread (bps)", color = NULL, linetype = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+ggsave("Latex/Inputs/Figure1.pdf", fig1, width = 7, height = 3.5)
+
+
 #============================================== Part 3 - DiD regression ==============================================
 
+#============================================= Part 3.1 - Model estimation =============================================
 #Event dates
 consolidation_date <- as.Date("2019-07-01")
 refragmentation_date <- as.Date("2021-02-08")
@@ -163,6 +231,8 @@ df_main$post     <- ifelse(df_main$date >= consolidation_date, 1, 0)
 df_main$SMI_post <- df_main$SMI * df_main$post
 
 df_main_panel <- pdata.frame(df_main, index = c("ISIN", "date"))
+df_main_amihud <- df_main[complete.cases(df_main[, c("amihud", "SMI_post", "log_mcap", "turnover", "btm", "leverage")]), ]
+df_main_amihud_panel <- pdata.frame(df_main_amihud, index = c("ISIN", "date"))
 
 #Model 1: Main DiD without controls
 fit_1 <- plm(spread ~ SMI_post,
@@ -196,17 +266,33 @@ fit_4 <- plm(spread ~ SMI_cons + SMI_refrag +
 se_fit_4 <- coeftest(fit_4,
                      vcov = vcovHC(fit_4, cluster = "group", type = "sss"))[, 2]
 
+#Model 5: Main DiD using Amihud illiquidity without controls
+fit_5 <- plm(amihud ~ SMI_post,
+             data = df_main_amihud_panel, model = "within", effect = "twoways")
 
+se_fit_5 <- coeftest(fit_5,
+                     vcov = vcovHC(fit_5, cluster = "group", type = "sss"))[, 2]
+
+#Model 6: Main DiD using Amihud illiquidity with controls
+fit_6 <- plm(amihud ~ SMI_post + log_mcap + turnover + btm + leverage,
+             data = df_main_amihud_panel, model = "within", effect = "twoways")
+
+se_fit_6 <- coeftest(fit_6,
+                     vcov = vcovHC(fit_6, cluster = "group", type = "sss"))[, 2]
+
+
+#================================================= Part 3.2 - Output =================================================
 #Print output
-stargazer(list(fit_1, fit_2, fit_3, fit_4),
-          coef             = list(fit_1$coefficients, fit_2$coefficients, fit_3$coefficients, fit_4$coefficients),
-          se               = list(se_fit_1, se_fit_2, se_fit_3, se_fit_4),
+stargazer(list(fit_1, fit_2, fit_3, fit_4, fit_5, fit_6),
+          coef             = list(fit_1$coefficients, fit_2$coefficients, fit_3$coefficients, fit_4$coefficients, fit_5$coefficients, fit_6$coefficients),
+          se               = list(se_fit_1, se_fit_2, se_fit_3, se_fit_4, se_fit_5, se_fit_6),
           type             = "latex",
           out              = "Latex/Inputs/Table3.tex",
           title            = "Table 3: Effect of Market Consolidation and Re-fragmentation on Stock Liquidity",
           font.size        = "scriptsize",
+          table.placement  = "H",
           label            = "tab:did",
-          dep.var.labels   = "Bid-Ask Spread",
+          dep.var.labels   = c("Bid-Ask Spread", "Amihud Illiquidity"),
           covariate.labels = c("SMI x Post",
                               "SMI x Consolidated",
                               "SMI x Re-fragmented",
@@ -221,12 +307,13 @@ stargazer(list(fit_1, fit_2, fit_3, fit_4),
                               "btm", 
                               "leverage"),
           keep.stat        = c("adj.rsq"),
-          report           = "vcs",
-          add.lines        = list(c("Sample", "Pre + consolidated", "Pre + consolidated", "Full", "Full"),
-                                  c("Controls", "No", "Yes", "No", "Yes"),
-                                  c("Observations", length(fit_1$residuals), length(fit_2$residuals), length(fit_3$residuals), length(fit_4$residuals)),
-                                  c("Stock FE", "Yes", "Yes", "Yes", "Yes"),
-                                  c("Day FE", "Yes", "Yes", "Yes", "Yes"),
-                                  c("Cluster SE", "By stock", "By stock", "By stock", "By stock")),
+          omit.stat        = c("f", "ser"),
+          report           = "vc*t",
+          add.lines        = list(c("Sample", "Pre+Cons.", "Pre+Cons.", "Full", "Full", "Pre+Cons.", "Pre+Cons."),
+                                  c("Controls", "No", "Yes", "No", "Yes", "No", "Yes"),
+                                  c("Observations", length(fit_1$residuals), length(fit_2$residuals), length(fit_3$residuals), length(fit_4$residuals), length(fit_5$residuals), length(fit_6$residuals)),
+                                  c("Stock FE", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"),
+                                  c("Day FE", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes"),
+                                  c("Cluster SE", "By stock", "By stock", "By stock", "By stock", "By stock", "By stock")),
           notes.append     = FALSE,
           notes            = "*p<0.1; **p<0.05; ***p<0.01")

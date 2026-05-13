@@ -10,7 +10,6 @@ require(plm)
 require(lmtest)
 require(sandwich)
 require(stargazer)
-require(car)
 require(ggplot2)
 
 #============================================== Part 1 - Cleaning data ===============================================
@@ -83,10 +82,14 @@ df$btm      <- df$book_val_per_share / df$prc
 df$btm[df$btm < 0] <- NA
 df$leverage <- df$tot_debt_prop / 100
 
+#Event dates
+consolidation_date  <- as.Date("2019-07-01")
+refragmentation_date <- as.Date("2021-02-08")
+
 #Difference-in-differences variables
 df$SMI          <- ifelse(df$Index == "SMI", 1, 0)
-df$consolidated <- as.integer(df$date >= as.Date("2019-07-01") & df$date <  as.Date("2021-02-08"))
-df$refragmented <- as.integer(df$date >= as.Date("2021-02-08"))
+df$consolidated <- as.integer(df$date >= consolidation_date & df$date <  refragmentation_date)
+df$refragmented <- as.integer(df$date >= refragmentation_date)
 df$SMI_cons     <- df$SMI * df$consolidated
 df$SMI_refrag   <- df$SMI * df$refragmented
 
@@ -149,11 +152,8 @@ writeLines(c(
 df_pre <- df[df$consolidated == 0 & df$refragmented == 0, ]
 rownames(df_pre) <- NULL
 
-#Variables for pre period
-tab2_vars <- c("spread", "log_mcap", "turnover", "btm", "leverage")
-
 #OLS regressions for pre period
-models_pre <- lapply(tab2_vars, function(v) {
+models_pre <- lapply(tab1_vars, function(v) {
   lm(reformulate("SMI", response = v), data = df_pre)
 })
 
@@ -178,8 +178,8 @@ stargazer(models_pre,
           keep                   = "SMI",
           omit.stat              = c("f", "ser", "rsq"),
           report                 = "vc*t",
-          add.lines              = list(c("Pre-period", rep("Yes", length(tab2_vars))),
-                                        c("Cluster SE", rep("By stock", length(tab2_vars)))),
+          add.lines              = list(c("Pre-period", rep("Yes", length(tab1_vars))),
+                                        c("Cluster SE", rep("By stock", length(tab1_vars)))),
           notes.append           = FALSE,
           notes = "*$p < 0.1$; **$p < 0.05$; ***$p < 0.01$")
 
@@ -193,18 +193,16 @@ df_plot <- df %>%
   group_by(year_mon, group) %>%
   summarise(mean_spread = mean(spread, na.rm = TRUE), .groups = "drop")
 
-consolidation_label  <- as.Date("2019-07-01")
-refragmentation_label <- as.Date("2021-02-08")
 y_top <- max(df_plot$mean_spread) * 0.97
 
 fig1 <- ggplot(df_plot, aes(x = year_mon, y = mean_spread,
                              color = group, linetype = group)) +
   geom_line(linewidth = 0.7) +
-  geom_vline(xintercept = consolidation_label,  linetype = "dashed", color = "black") +
-  geom_vline(xintercept = refragmentation_label, linetype = "dotted", color = "black") +
-  annotate("text", x = consolidation_label,  y = y_top,
+  geom_vline(xintercept = consolidation_date,  linetype = "dashed", color = "black") +
+  geom_vline(xintercept = refragmentation_date, linetype = "dotted", color = "black") +
+  annotate("text", x = consolidation_date,  y = y_top,
            label = "Consolidation", hjust = -0.05, size = 3) +
-  annotate("text", x = refragmentation_label, y = y_top,
+  annotate("text", x = refragmentation_date, y = y_top,
            label = "Re-fragmentation", hjust = -0.05, size = 3) +
   scale_color_manual(values = c("SMI" = "steelblue", "CAC40/DAX30" = "firebrick")) +
   labs(x = NULL, y = "Average Bid-Ask Spread (bps)", color = NULL, linetype = NULL) +
@@ -217,9 +215,6 @@ ggsave("Latex/Inputs/Figure1.pdf", fig1, width = 7, height = 3.5)
 #============================================== Part 3 - DiD regression ==============================================
 
 #============================================= Part 3.1 - Model estimation =============================================
-#Event dates
-consolidation_date <- as.Date("2019-07-01")
-refragmentation_date <- as.Date("2021-02-08")
 
 #Main DiD regression: before consolidation + consolidation period
 df_main <- df[df$date < refragmentation_date, ]
